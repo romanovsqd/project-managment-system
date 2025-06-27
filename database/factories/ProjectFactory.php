@@ -21,7 +21,7 @@ class ProjectFactory extends Factory
             'name' => fake()->words(3, true),
             'description' => fake()->optional()->paragraph(),
             'status' => 'active',
-            'created_by' => User::factory()->create(),
+            'created_by' => User::factory(),
         ];
     }
 }

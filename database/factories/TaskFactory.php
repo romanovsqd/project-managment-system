@@ -19,11 +19,11 @@ class TaskFactory extends Factory
     public function definition(): array
     {
         return [
-            'project_id' => Project::factory()->create(),
+            'project_id' => Project::factory(),
             'title' => fake()->words(3, true),
             'description' => fake()->paragraph(),
             'status' => 'to_do',
-            'assigned_to' => User::factory()->create(),
+            'assigned_to' => User::factory(),
         ];
     }
 }
