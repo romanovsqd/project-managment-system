@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignId('assigned_to')->nullable()->constrained('users')->nullOnDelete();
             $table->string('title');
             $table->text('description')->nullable();
-            $table->enum('status', ['to_do', 'in_progress', 'done']);
+            $table->enum('status', ['to_do', 'in_progress', 'done'])->default('to_do');
             $table->timestamps();
         });
     }
