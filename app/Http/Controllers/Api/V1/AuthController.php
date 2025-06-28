@@ -2,25 +2,21 @@
 
 namespace App\Http\Controllers\Api\V1;
 
-use App\Models\Task;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
+use App\Http\Requests\LoginRequest;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\TaskResource;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\RegisterRequest;
 use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
-    public function register(Request $request): JsonResponse
+    public function register(RegisterRequest $request): JsonResponse
     {
-        $credentials = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255'],
-            'password' => ['required', 'string', 'confirmed', 'min:8'],
-        ]);
+        $credentials = $request->validated();
 
         $user = User::create($credentials);
         $token = $user->createToken('auth_token')->plainTextToken;
@@ -31,12 +27,9 @@ class AuthController extends Controller
         ], Response::HTTP_CREATED);
     }
 
-    public function login(Request $request): JsonResponse
+    public function login(LoginRequest $request): JsonResponse
     {
-        $credentials = $request->validate([
-            'email' => ['required', 'string', 'email'],
-            'password' => ['required', 'string'],
-        ]);
+        $credentials = $request->validated();
 
         if (!Auth::attempt($credentials)) {
             throw ValidationException::withMessages([
