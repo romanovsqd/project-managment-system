@@ -7,11 +7,16 @@ use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\User\UserRequest;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class UserController extends Controller
 {
+    use AuthorizesRequests;
+
     public function index(): JsonResponse
     {
+        $this->authorize('viewAny', User::class);
+
         $users = User::all();
 
         return response()->json([
@@ -21,6 +26,8 @@ class UserController extends Controller
 
     public function store(UserRequest $request): JsonResponse
     {
+        $this->authorize('create', User::class);
+
         $credentials = $request->validated();
 
         $user = User::create($credentials);
@@ -32,6 +39,8 @@ class UserController extends Controller
 
     public function show(User $user): JsonResponse
     {
+        $this->authorize('view', User::class);
+
         return response()->json([
             'user' => $user,
         ], Response::HTTP_OK);
@@ -39,6 +48,8 @@ class UserController extends Controller
 
     public function update(UserRequest $request, User $user): JsonResponse
     {
+        $this->authorize('update', User::class);
+
         $credentials = $request->validated();
 
         $user->update($credentials);
@@ -50,6 +61,8 @@ class UserController extends Controller
 
     public function destroy(User $user): JsonResponse
     {
+        $this->authorize('delete', User::class);
+
         $user->delete();
 
         return response()->json([
