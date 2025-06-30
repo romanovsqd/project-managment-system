@@ -17,7 +17,7 @@ Route::prefix('v1')->middleware(['auth:sanctum'])->group(function () {
     Route::apiResource('users', UserController::class);
     Route::apiResource('projects', ProjectController::class);
 
-    Route::post('/projects/{project}/users', [ProjectController::class, 'addMember']);
+    Route::post('/projects/{project}/users', [ProjectController::class, 'addMember'])->name('projects.users.store');
 
     Route::apiResource('projects.tasks', TaskController::class)->shallow();
 });
