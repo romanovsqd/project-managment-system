@@ -3,10 +3,11 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Models\Project;
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreProjectRequest;
+use App\Http\Requests\UpdateProjectRequest;
 
 class ProjectController extends Controller
 {
@@ -19,12 +20,9 @@ class ProjectController extends Controller
         ], Response::HTTP_OK);
     }
 
-    public function store(Request $request): JsonResponse
+    public function store(StoreProjectRequest $request): JsonResponse
     {
-        $projectData = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'description' => ['nullable', 'string'],
-        ]);
+        $projectData = $request->validated();
 
         $user = auth()->user();
 
@@ -45,13 +43,9 @@ class ProjectController extends Controller
         ], Response::HTTP_OK);
     }
 
-    public function update(Request $request, Project $project): JsonResponse
+    public function update(UpdateProjectRequest $request, Project $project): JsonResponse
     {
-        $projectData = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'status' => ['required', 'string', 'in:active,completed'],
-            'description' => ['nullable', 'string'],
-        ]);
+        $projectData = $request->validated();
 
         $project->update($projectData);
 

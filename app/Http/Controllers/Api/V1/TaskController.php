@@ -3,11 +3,12 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Models\Task;
-use Illuminate\Http\Request;
+use App\Models\Project;
 use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
-use App\Models\Project;
+use App\Http\Requests\StoreTaskRequest;
+use App\Http\Requests\UpdateTaskRequest;
 
 class TaskController extends Controller
 {
@@ -20,13 +21,9 @@ class TaskController extends Controller
         ], Response::HTTP_OK);
     }
 
-    public function store(Request $request, Project $project): JsonResponse
+    public function store(StoreTaskRequest $request, Project $project): JsonResponse
     {
-        $taskData = $request->validate([
-            'title' => ['required', 'string', 'max:255'],
-            'description' => ['nullable', 'string'],
-            'assigned_to' => ['nullable', 'integer', 'exists:users,id'],
-        ]);
+        $taskData = $request->validated();
 
         $taskData['project_id'] = $project->id;
 
@@ -44,14 +41,9 @@ class TaskController extends Controller
         ], Response::HTTP_OK);
     }
 
-    public function update(Request $request, Task $task): JsonResponse
+    public function update(UpdateTaskRequest $request, Task $task): JsonResponse
     {
-        $taskData = $request->validate([
-            'title' => ['required', 'string', 'max:255'],
-            'description' => ['nullable', 'string'],
-            'status' => ['required', 'string', 'in:to_do,in_progress,done'],
-            'assigned_to' => ['nullable', 'integer', 'exists:users,id'],
-        ]);
+        $taskData = $request->validated();
 
         $task->update($taskData);
 
