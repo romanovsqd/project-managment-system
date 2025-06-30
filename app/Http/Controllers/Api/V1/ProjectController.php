@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Models\User;
 use App\Models\Project;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -9,12 +10,16 @@ use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Project\StoreProjectRequest;
 use App\Http\Requests\Project\UpdateProjectRequest;
-use App\Models\User;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class ProjectController extends Controller
 {
+    use AuthorizesRequests;
+
     public function index(): JsonResponse
     {
+        $this->authorize('viewAny', Project::class);
+
         $projects = Project::all();
 
         return response()->json([
@@ -24,6 +29,8 @@ class ProjectController extends Controller
 
     public function store(StoreProjectRequest $request): JsonResponse
     {
+        $this->authorize('create', Project::class);
+
         $projectData = $request->validated();
 
         $user = auth()->user();
@@ -40,6 +47,8 @@ class ProjectController extends Controller
 
     public function show(Project $project): JsonResponse
     {
+        $this->authorize('view', $project);
+
         return response()->json([
             'project' => $project,
         ], Response::HTTP_OK);
@@ -47,6 +56,8 @@ class ProjectController extends Controller
 
     public function update(UpdateProjectRequest $request, Project $project): JsonResponse
     {
+        $this->authorize('update', $project);
+
         $projectData = $request->validated();
 
         $project->update($projectData);
@@ -58,6 +69,8 @@ class ProjectController extends Controller
 
     public function destroy(Project $project): JsonResponse
     {
+        $this->authorize('view', $project);
+
         $project->delete();
 
         return response()->json([
@@ -67,6 +80,8 @@ class ProjectController extends Controller
 
     public function addMember(Request $request, Project $project)
     {
+        $this->authorize('addMember', $project);
+
         $request->validate([
             'user_id' => ['required', 'integer', 'exists:users,id'],
         ]);
