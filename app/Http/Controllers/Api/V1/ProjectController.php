@@ -26,9 +26,12 @@ class ProjectController extends Controller
             'description' => ['nullable', 'string'],
         ]);
 
-        $projectData['created_by'] = auth()->id();
+        $user = auth()->user();
 
+        $projectData['created_by'] = $user->id;
+        
         $project = Project::create($projectData);
+        $project->members()->attach($user);
 
         return response()->json([
             'project' => $project,
