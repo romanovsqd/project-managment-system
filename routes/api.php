@@ -12,6 +12,10 @@ Route::prefix('v1')->group(function () {
 
 Route::prefix('v1')->middleware(['auth:sanctum'])->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
+
     Route::apiResource('projects', ProjectController::class);
+
+    Route::post('/projects/{project}/users', [ProjectController::class, 'addMember']);
+
     Route::apiResource('projects.tasks', TaskController::class)->shallow();
 });
